@@ -29,13 +29,13 @@ function start_state() {
 //  Turn on different LED here
 function auto_state() {
     auto_mode_countdown(false)
-    //  Controls 30sec timer
-    //  change your auto code here, the one that stops your robot from falling off. 
+    //  Controls 30sec timer. Don't Change. 
+    //  Your auto code here
     let line_sensor = pins.analogReadPin(AnalogPin.P0)
 }
 
 function driver_state() {
-    //  the code for our driver state goes here
+    //  Your Driver code here
     radio.onReceivedNumber(function on_received_number(receivedNumber: number) {
         
     })
@@ -62,10 +62,11 @@ basic.forever(function on_forever() {
     }
     
 })
-//  don't change this function
 function auto_mode_countdown(initiate: boolean) {
     let now: number;
+    //  function to control 30s timer for Auto mode
     
+    //  don't change this function
     if (initiate) {
         auto_mode = true
         //  setup boolean variable to run auto mode code

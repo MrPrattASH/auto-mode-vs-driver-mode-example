@@ -18,8 +18,6 @@ driver_mode = False
 start_auto_time = 0
 end_auto_time = 0
 
-
-
 def start_state():
     # the code for our start battle state goes here
     # start countdown - Turn on LED here
@@ -27,17 +25,15 @@ def start_state():
     basic.show_number(2)
     basic.show_number(1)
     # Turn on different LED here
-    
-    
 
 def auto_state():
-    auto_mode_countdown(False) # Controls 30sec timer
+    auto_mode_countdown(False) # Controls 30sec timer. Don't Change. 
     
-    # change your auto code here, the one that stops your robot from falling off. 
+    # Your auto code here
     line_sensor = pins.analog_read_pin(AnalogPin.P0)
 
 def driver_state():
-    # the code for our driver state goes here
+    # Your Driver code here
     def on_received_number(receivedNumber):
         pass
     radio.on_received_number(on_received_number)
@@ -57,9 +53,11 @@ def on_forever():
 basic.forever(on_forever)
 
 
-# don't change this function
+
 def auto_mode_countdown(initiate):
+    # function to control 30s timer for Auto mode
     global auto_mode, start_auto_time, end_auto_time, driver_mode, auto_mode
+    # don't change this function
     if initiate:
         auto_mode = True # setup boolean variable to run auto mode code
         #For controlling a 30second auto time:
