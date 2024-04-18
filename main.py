@@ -18,45 +18,29 @@ driver_mode = False
 start_auto_time = 0
 end_auto_time = 0
 
+
+
 def start_state():
     # the code for our start battle state goes here
-    global auto_mode, start_auto_time, end_auto_time
-
     # start countdown - Turn on LED here
     basic.show_number(3)
     basic.show_number(2)
     basic.show_number(1)
     # Turn on different LED here
-
-    #setup for Auto mode
-    auto_mode = True # setup boolean variable to run auto mode code
-
-    #the bottom 2 lines are for controlling a 30second auto time. 
-    start_auto_time = control.millis() # gets the current time in ms since the start of the program
-    end_auto_time = start_auto_time + 30000 # Add 30sec to our "timer"
+    
+    
 
 def auto_state():
-    global auto_mode, start_auto_time, end_auto_time
-    # the code for our autonomous mode goes here
-    #don't change this. 
-    now = control.millis() # get current time
-    if now > end_auto_time:
-        # more than 30s has now elapsed, turn off auto mode
-        auto_mode = False 
-        # stop motors & show 5s countdown
-        driver_mode = True
+    auto_mode_countdown(False) # Controls 30sec timer
     
-    else:
-        # change your auto code here, the one that stops your robot from falling off. 
-        #run auto mode sense, think, act code here
-        line_sensor = pins.analog_read_pin(AnalogPin.P0)
+    # change your auto code here, the one that stops your robot from falling off. 
+    line_sensor = pins.analog_read_pin(AnalogPin.P0)
 
 def driver_state():
     # the code for our driver state goes here
     def on_received_number(receivedNumber):
         pass
     radio.on_received_number(on_received_number)
-     # replace this pass with your code
 
 
 def on_forever():
@@ -64,8 +48,27 @@ def on_forever():
     # A button "On start" event
     if input.button_is_pressed(Button.A):
         start_state() # run start state code
+        auto_mode_countdown(True) # Starts 30s timer
     if auto_mode:
+        auto_mode_countdown(False) # checks 30s timer
         auto_state() # run auto state code
     elif driver_mode:
         driver_state() # run driver state code
 basic.forever(on_forever)
+
+
+# don't change this function
+def auto_mode_countdown(initiate):
+    global auto_mode, start_auto_time, end_auto_time, driver_mode, auto_mode
+    if initiate:
+        auto_mode = True # setup boolean variable to run auto mode code
+        #For controlling a 30second auto time:
+        start_auto_time = control.millis() # gets the current time in ms since the start of the program
+        end_auto_time = start_auto_time + 30000 # Add 30sec to our "timer"
+    else:
+        now = control.millis() # get current time
+        if now > end_auto_time:
+                # more than 30s has now elapsed, turn off auto mode
+                auto_mode = False
+                # stop motors & show 5s countdown
+                driver_mode = True

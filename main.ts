@@ -20,41 +20,18 @@ let start_auto_time = 0
 let end_auto_time = 0
 function start_state() {
     //  the code for our start battle state goes here
-    
     //  start countdown - Turn on LED here
     basic.showNumber(3)
     basic.showNumber(2)
     basic.showNumber(1)
-    //  Turn on different LED here
-    // setup for Auto mode
-    auto_mode = true
-    //  setup boolean variable to run auto mode code
-    // the bottom 2 lines are for controlling a 30second auto time. 
-    start_auto_time = control.millis()
-    //  gets the current time in ms since the start of the program
-    end_auto_time = start_auto_time + 30000
 }
 
-//  Add 30sec to our "timer"
+//  Turn on different LED here
 function auto_state() {
-    let driver_mode: boolean;
-    let line_sensor: number;
-    
-    //  the code for our autonomous mode goes here
-    // don't change this. 
-    let now = control.millis()
-    //  get current time
-    if (now > end_auto_time) {
-        //  more than 30s has now elapsed, turn off auto mode
-        auto_mode = false
-        //  stop motors & show 5s countdown
-        driver_mode = true
-    } else {
-        //  change your auto code here, the one that stops your robot from falling off. 
-        // run auto mode sense, think, act code here
-        line_sensor = pins.analogReadPin(AnalogPin.P0)
-    }
-    
+    auto_mode_countdown(false)
+    //  Controls 30sec timer
+    //  change your auto code here, the one that stops your robot from falling off. 
+    let line_sensor = pins.analogReadPin(AnalogPin.P0)
 }
 
 function driver_state() {
@@ -64,17 +41,20 @@ function driver_state() {
     })
 }
 
-//  replace this pass with your code
 //  run driver state code
 basic.forever(function on_forever() {
     
     //  A button "On start" event
     if (input.buttonIsPressed(Button.A)) {
         start_state()
+        //  run start state code
+        auto_mode_countdown(true)
     }
     
-    //  run start state code
+    //  Starts 30s timer
     if (auto_mode) {
+        auto_mode_countdown(false)
+        //  checks 30s timer
         auto_state()
     } else if (driver_mode) {
         //  run auto state code
@@ -82,3 +62,29 @@ basic.forever(function on_forever() {
     }
     
 })
+//  don't change this function
+function auto_mode_countdown(initiate: boolean) {
+    let now: number;
+    
+    if (initiate) {
+        auto_mode = true
+        //  setup boolean variable to run auto mode code
+        // For controlling a 30second auto time:
+        start_auto_time = control.millis()
+        //  gets the current time in ms since the start of the program
+        end_auto_time = start_auto_time + 30000
+    } else {
+        //  Add 30sec to our "timer"
+        now = control.millis()
+        //  get current time
+        if (now > end_auto_time) {
+            //  more than 30s has now elapsed, turn off auto mode
+            auto_mode = false
+            //  stop motors & show 5s countdown
+            driver_mode = true
+        }
+        
+    }
+    
+}
+
